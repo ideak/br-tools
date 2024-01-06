@@ -1,0 +1,57 @@
+[ "$TERM" == "vt220" ] && TERM=linux
+
+[ -z "$PS1" ] && return
+
+HISTCONTROL=ignoredups:ignorespace
+shopt -s histappend
+HISTSIZE=3000
+HISTFILESIZE=3000
+
+shopt -s checkwinsize
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+color_prompt=no
+case "$TERM" in
+xterm-color|xterm-256color)
+	color_prompt=yes
+	;;
+esac
+
+chroot_prompt='BR'
+uid_host_prompt='\u@\h'
+workdir_prompt='\w'
+priv_user_prompt='\$'
+
+if [ "$color_prompt" = yes ]; then
+	COLOR_RED='\033[31m'
+	COLOR_GREEN='\033[32m'
+	COLOR_BLUE='\033[34m'
+	COLOR_NONE='\033[0m'
+
+	chroot_prompt="${COLOR_RED}${chroot_prompt}${COLOR_NONE}"
+	uid_host_prompt="${COLOR_GREEN}${uid_host_prompt}${COLOR_NONE}"
+	workdir_prompt="${COLOR_BLUE}${workdir_prompt}${COLOR_NONE}"
+fi
+
+PS1="${chroot_prompt}:${uid_host_prompt}:${workdir_prompt}${priv_user_prompt} "
+
+if [ -x /usr/bin/dircolors ]; then
+	if [ -r ~/.dircolors ]; then
+		eval "$(dircolors -b ~/.dircolors)"
+	else
+		eval "$(dircolors -b)"
+	fi
+
+	alias ls='ls --color=auto'
+	alias grep='grep --color=auto'
+fi
+
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
+fi
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+	. /etc/bash_completion
+fi
+
+cd $HOME

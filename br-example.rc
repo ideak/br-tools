@@ -1,0 +1,15 @@
+BR_ROOT=$HOME/br-mnt
+BR_ROOT_HOME=/root
+BR_ROOT_HOME_PATH=$BR_ROOT/$BR_ROOT_HOME
+
+# BR_MOUNTS fs-device/file: <device/file>, none
+# BR_MOUNTS fs-type: auto
+# BR_MOUNTS options: <option1>[,<option2>...]: loop,bind
+# ----------------------------------------------------------------
+# mount-point			fs-device/file	fs-type	[:options]
+BR_MOUNTS="\
+$BR_ROOT			$HOME/brfs.ext2	auto	loop
+$BR_ROOT/sys			none		sysfs
+$BR_ROOT/sys/kernel/debug	none		debugfs
+$BR_ROOT/proc			none		proc
+$BR_ROOT_HOME_PATH/host		$HOME		auto	bind"
